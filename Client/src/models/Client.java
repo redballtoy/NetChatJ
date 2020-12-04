@@ -1,6 +1,4 @@
-package views;
-
-//вставить в переменную
+package models;//вставить в переменную
 //--module-path ${PATH_TO_FX} --add-modules javafx.controls,javafx.fxml
 
 import controller.ViewController;
@@ -18,7 +16,7 @@ public class Client extends Application {
     Parent root; //это корневой шаблон который мы видим в окне сцены,
     // Parent - это обобщенный класс отображаемый для всех компонентов JavaFX
 
-    final String PATH_TO_XML_LAYOUT = "view.fxml";
+    final String PATH_TO_XML_LAYOUT = "/views/view.fxml";
     final int width = 1000;
     final int height = 600;
     final int VERSION_APP = 6;
@@ -34,7 +32,7 @@ public class Client extends Application {
     //Stage - это сцена, фактически это окно JavaFX
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(Client.class.getResource(PATH_TO_XML_LAYOUT));
+        loader.setLocation(getClass().getResource(PATH_TO_XML_LAYOUT));
 
         //создание окна для отображения
         root = loader.load();
