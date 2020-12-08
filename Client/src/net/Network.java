@@ -35,6 +35,10 @@ public class Network {
 
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     //создание сетевого соединения
     public boolean connect() {
         //создание сокета клиента, необходимо будет указать хост и порт
@@ -74,14 +78,14 @@ public class Network {
         //ожидание ответв от сервера делаем в новом потоке
         Thread thread = new Thread(() -> {
             try {
-                while (true) {
+                //while (true) {
                     String msg = in.readUTF();
                     //сообщение необходимо отправить в контроллер что бы отобразить его
                     //для этого надо получить элемент контроллера
                     viewController.addWordToList(msg);
                     System.out.println("Log:" + msg);
 
-                }
+                //}
             } catch (IOException e) {
                 e.printStackTrace();
                 Client.alertGo("IOException", "Connection Error"

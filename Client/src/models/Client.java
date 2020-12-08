@@ -24,6 +24,7 @@ public class Client extends Application {
     private Stage primaryStage;
     private Stage authStage;
     private Network network;
+    private ViewController viewController;
 
 
     //Единственная цель этого метода запуск приложения
@@ -101,7 +102,7 @@ public class Client extends Application {
         //primaryStage.show(); //не должно появляться по умолчаниж
 
         //Получение контроллера для вьюхи
-        ViewController viewController = loader.getController();
+        viewController = loader.getController();
         //в контроллер передаем объект нашего network
         viewController.setNetwork(network);
         //Чтение сообщения с сервера
@@ -116,6 +117,13 @@ public class Client extends Application {
         authStage.close();
         //открыть окно основного чата
         primaryStage.show();
+
+        //Выводим имя подключившегося юзера
+        primaryStage.setTitle(network.getUsername());
+        viewController.setUsernameTitle(network.getUsername());
+        //ожидание нашего чата
+        network.waitMessage(viewController);
+
 
     }
 

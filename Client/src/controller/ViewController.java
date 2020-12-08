@@ -156,7 +156,14 @@ public class ViewController {
             //System.out.println("Ошибка при отправке сообщения " + msg);
             addToStatusLine("Error#2 - Ошибка отправки сообщения", Alert.AlertType.ERROR);
         }
+    }
+
+    public void appendMessage(String message) {
 
 
+    }
+
+    public void setUsernameTitle(String username) {
+        addToStatusLine("К нам подключился: " + username, Alert.AlertType.INFORMATION);
     }
 }
