@@ -76,7 +76,7 @@ public class ClientHandler {
                     //значит авторизация прошла
                     //проверка не занят ли никнейм
                     if (myServer.isUsernetBusy(username)) {
-                        System.out.printf("Никнейм %s уже занят", username);
+                        //System.out.printf("Никнейм %s уже занят", username);
                         out.writeUTF(String.format("%s %s", Prefics.AUTHERR_CMD_PREFIX.getCode(),
                                 "Никнейм  уже занят"));
 

@@ -11,8 +11,10 @@ import java.io.IOException;
 
 public class AuthViewController {
 
-    @FXML public TextField loginField;
-    @FXML public PasswordField passwordField;
+    @FXML
+    public TextField loginField;
+    @FXML
+    public PasswordField passwordField;
 
 
     //добавляем Network что бы через него идентифицироваться
@@ -30,7 +32,7 @@ public class AuthViewController {
         //Если поля не пустые, передаем данные не Network а в свою очередь на сервер
         //там они будут проверены на валидность
         if (login.isEmpty() || password.isEmpty()) {
-            Client.alertGo("EmptyField","Не введены пароль или логин",
+            Client.alertGo("EmptyField", "Не введены пароль или логин",
                     "Введите логин и пароль", Alert.AlertType.INFORMATION);
             return;
         }
@@ -39,7 +41,7 @@ public class AuthViewController {
         String authErrorMessage = network.sendAuthCommnd(login, password);
         System.out.println(authErrorMessage);
         //Если будет ошибка
-        if (authErrorMessage!=null) {
+        if (authErrorMessage != null) {
             //Выводим ошибку на экран
             Client.alertGo("Error Authentication",
                     "Ошибка идентификации",
@@ -48,8 +50,6 @@ public class AuthViewController {
             //Если aвторизация пройдена, открывает чат
             networkClient.openMainChatWindow();
         }
-
-
     }
 
 

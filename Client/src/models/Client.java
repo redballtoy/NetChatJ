@@ -46,9 +46,6 @@ public class Client extends Application {
 
             alertGo("Connect Input Error", "Ошибка подключения к серверу",
                     "Ошибка подключения к серверу", Alert.AlertType.ERROR);
-            //viewController.addToStatusLine("Connect Input Error - Ошибка подключения к серверу", Alert.AlertType.ERROR);
-            //viewController.addToStatusLine("Error#3 - Ошибка подключения к серверу", Alert.AlertType.ERROR);
-            //если ошибка подключения завершаем метод
             return;
         }
 
@@ -56,7 +53,7 @@ public class Client extends Application {
         openAuthWindow();
 
         //открытие чата при успешном прохождении авторизации
-        openMainChatWindow();
+        createMainChatWindow();
 
     }
 
@@ -85,12 +82,13 @@ public class Client extends Application {
         //добавляем текущий объект
         authViewController.setNetworkClient(this);
 
-        authStage.setOnCloseRequest(windowEvent -> network.closeSocket());
+       // authStage.setOnCloseRequest(windowEvent -> network.closeSocket());
+
 
     }
 
     //Окно открытия основного чата
-    public void openMainChatWindow() throws IOException {
+    public void createMainChatWindow() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource(PATH_TO_MAIN_XML_LAYOUT));
 
@@ -113,15 +111,20 @@ public class Client extends Application {
         primaryStage.setOnCloseRequest(windowEvent -> network.closeSocket());
     }
 
+    public void openMainChatWindow() {
+        //звкрыть окно аутентификации
+        authStage.close();
+        //открыть окно основного чата
+        primaryStage.show();
+
+    }
+
     public static void alertGo(String title, String header, String content, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
-        /*alert.setTitle("Input Error!");
-        alert.setHeaderText("Ошибка ввода сообщения");
-        alert.setContentText("Вы не ввели сообщение!\nНельзя вводить пустое сообщение!");*/
-        alert.showAndWait();//отображает окно и не дает с него переключаться в отличие от простого show
+        alert.showAndWait();
 
     }
 }
