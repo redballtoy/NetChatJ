@@ -11,7 +11,6 @@ import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import net.Network;
-import util.AlertInfo;
 
 import java.io.IOException;
 
@@ -22,11 +21,9 @@ public class Client extends Application {
     final int width = 1000;
     final int height = 600;
     final int VERSION_APP = 6;
-    final AlertInfo alertInfo = new AlertInfo();
     private Stage primaryStage;
     private Stage authStage;
     private Network network;
-
 
 
     //Единственная цель этого метода запуск приложения
@@ -47,7 +44,7 @@ public class Client extends Application {
         //если соединение не произошло вывести сообщение
         if (!network.connect()) {
 
-            alertInfo.alertGo("Connect Input Error","Ошибка подключения к серверу",
+            alertGo("Connect Input Error", "Ошибка подключения к серверу",
                     "Ошибка подключения к серверу", Alert.AlertType.ERROR);
             //viewController.addToStatusLine("Connect Input Error - Ошибка подключения к серверу", Alert.AlertType.ERROR);
             //viewController.addToStatusLine("Error#3 - Ошибка подключения к серверу", Alert.AlertType.ERROR);
@@ -62,6 +59,7 @@ public class Client extends Application {
         openMainChatWindow();
 
     }
+
     //метод открывающий на экране окно авторизации
     public void openAuthWindow() throws IOException {
         FXMLLoader loader = new FXMLLoader();
@@ -87,7 +85,7 @@ public class Client extends Application {
         //добавляем текущий объект
         authViewController.setNetworkClient(this);
 
-        authStage.setOnCloseRequest(windowEvent->network.closeSocket());
+        authStage.setOnCloseRequest(windowEvent -> network.closeSocket());
 
     }
 
@@ -112,6 +110,18 @@ public class Client extends Application {
         //network.waitMessage(viewController);
         //В случае закрытия нашего окна закрываем сокет
         //используем лямбду для реализации функционального интерфейса
-        primaryStage.setOnCloseRequest(windowEvent->network.closeSocket());
+        primaryStage.setOnCloseRequest(windowEvent -> network.closeSocket());
+    }
+
+    public static void alertGo(String title, String header, String content, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        /*alert.setTitle("Input Error!");
+        alert.setHeaderText("Ошибка ввода сообщения");
+        alert.setContentText("Вы не ввели сообщение!\nНельзя вводить пустое сообщение!");*/
+        alert.showAndWait();//отображает окно и не дает с него переключаться в отличие от простого show
+
     }
 }

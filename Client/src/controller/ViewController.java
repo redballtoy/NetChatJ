@@ -4,8 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import models.Client;
 import net.Network;
-import util.AlertInfo;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -81,7 +81,7 @@ public class ViewController {
     public void addWordToList(String word) {
         //Валидация что в окно ввода не пустое
         if (word.isEmpty()) {
-            new AlertInfo().alertGo("Input Error!", "Ошибка ввода сообщения"
+            Client.alertGo("Input Error!", "Ошибка ввода сообщения"
                     , "Вы не ввели сообщение!\nНельзя вводить пустое сообщение!", Alert.AlertType.ERROR);
         } else {
             //Получаем коллекцию элементов из ListView и добавляем в нее то что вводим внизу
@@ -99,12 +99,12 @@ public class ViewController {
         String word = et_edit_text.getText().toString();
         //Вадидация что в осно ввода не пустое
         if (word.isEmpty()) {
-            new AlertInfo().alertGo("Input Error!", "Ошибка ввода сообщения"
+            Client.alertGo("Input Error!", "Ошибка ввода сообщения"
                     , "Вы не ввели сообщение!\nНельзя вводить пустое сообщение!", Alert.AlertType.ERROR);
         } else {
             //Получаем коллекцию элементов из ListView и добавляем в нее то что вводим внизу
             if (getCurrentUser() == null) {
-                new AlertInfo().alertGo("Select Error","Ошибка выбора пользователя"
+                Client.alertGo("Select Error","Ошибка выбора пользователя"
                         ,"Ваберите кому хотите написать", Alert.AlertType.ERROR);
                 return;
             }

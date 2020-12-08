@@ -3,7 +3,7 @@ package net;
 import autoidentification.Prefics;
 import controller.ViewController;
 import javafx.scene.control.Alert;
-import util.AlertInfo;
+import models.Client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -22,8 +22,6 @@ public class Network {
     private Socket socket;
     private String username;
 
-
-    final AlertInfo alertInfo = new AlertInfo();
 
     //будет обращаться к конструктору с дефолтными параметрами
     public Network() {
@@ -48,7 +46,7 @@ public class Network {
             return true;
         } catch (IOException e) {
             e.printStackTrace();
-            alertInfo.alertGo("IOException", "Connection Error"
+            Client.alertGo("IOException", "Connection Error"
                     , "Соединение не было установлено", Alert.AlertType.ERROR);
             return false;
         }
@@ -86,7 +84,7 @@ public class Network {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                alertInfo.alertGo("IOException", "Connection Error"
+                Client.alertGo("IOException", "Connection Error"
                         , "Соединение потеряно", Alert.AlertType.ERROR);
 
             }
@@ -107,7 +105,7 @@ public class Network {
                     password));
         } catch (IOException e) {
             e.printStackTrace();
-            new AlertInfo().alertGo("Send info to server Error!"
+            Client.alertGo("Send info to server Error!"
                     , "Ошибка отправки данныз пользователя на сервер",
                     "Попробовать еще раз", Alert.AlertType.ERROR);
         }
@@ -117,7 +115,7 @@ public class Network {
             responce = in.readUTF();
         } catch (IOException e) {
             e.printStackTrace();
-            new AlertInfo().alertGo("Server responce Error!"
+            Client.alertGo("Server responce Error!"
                     , "Ошибка получения данных аутентификации с сервера",
                     "Попробовать еще раз", Alert.AlertType.ERROR);
         }
@@ -127,7 +125,7 @@ public class Network {
             //Ок продолжаем процедуру ауторизации
             //Парсим ответ от сервера
             this.username = responce.split(Prefics.STRING_SPLIT_PREFIX.getCode(), 2)[1];
-            new AlertInfo().alertGo("Auth successfully!", "Аутодентификация пройдена",
+            Client.alertGo("Auth successfully!", "Аутодентификация пройдена",
                     "Пользователь: " + username + " авторизован!", Alert.AlertType.INFORMATION);
             //ошибки нет
             return null;

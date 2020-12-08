@@ -6,7 +6,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import models.Client;
 import net.Network;
-import util.AlertInfo;
 
 import java.io.IOException;
 
@@ -31,7 +30,7 @@ public class AuthViewController {
         //Если поля не пустые, передаем данные не Network а в свою очередь на сервер
         //там они будут проверены на валидность
         if (login.isEmpty() || password.isEmpty()) {
-            new AlertInfo().alertGo("EmptyField","Не введены пароль или логин",
+            Client.alertGo("EmptyField","Не введены пароль или логин",
                     "Введите логин и пароль", Alert.AlertType.INFORMATION);
             return;
         }
@@ -41,8 +40,8 @@ public class AuthViewController {
         System.out.println(authErrorMessage);
         //Если будет ошибка
         if (authErrorMessage!=null) {
-            //вызываем окно
-            new AlertInfo().alertGo("Error Authentication",
+            //Выводим ошибку на экран
+            Client.alertGo("Error Authentication",
                     "Ошибка идентификации",
                     "Повторите ввод логина и пароля", Alert.AlertType.ERROR);
         } else {
