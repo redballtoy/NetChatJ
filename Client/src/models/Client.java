@@ -1,27 +1,32 @@
 package models;//вставить в переменную
 //--module-path ${PATH_TO_FX} --add-modules javafx.controls,javafx.fxml
 
+import controller.AuthViewController;
 import controller.ViewController;
-import javafx.scene.control.Alert;
-import net.Network;
-import util.AlertInfo;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import net.Network;
+import util.AlertInfo;
 
 import java.io.IOException;
 
 public class Client extends Application {
-    Parent root; //это корневой шаблон который мы видим в окне сцены,
-    // Parent - это обобщенный класс отображаемый для всех компонентов JavaFX
 
-    final String PATH_TO_XML_LAYOUT = "/views/view.fxml";
+    final String PATH_TO_MAIN_XML_LAYOUT = "/views/view.fxml";
+    final String PATH_TO_AUTH_XML_LAYOUT = "/views/auth_view.fxml";
     final int width = 1000;
     final int height = 600;
     final int VERSION_APP = 6;
     final AlertInfo alertInfo = new AlertInfo();
+    private Stage primaryStage;
+    private Stage authStage;
+    private Network network;
+
 
 
     //Единственная цель этого метода запуск приложения
@@ -32,46 +37,81 @@ public class Client extends Application {
     @Override
     //Stage - это сцена, фактически это окно JavaFX
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource(PATH_TO_XML_LAYOUT));
 
-        //создание окна для отображения
-        root = loader.load();
-        primaryStage.setTitle("FXmessenger v." + VERSION_APP);
-        primaryStage.setScene(new Scene(root, width, height));
-        primaryStage.show();
+        //Stage для основного чата
+        this.primaryStage = primaryStage;
 
-
-
+        //Создаем Network
         //Получение network и взаимодействие с ним
-        Network network = new Network();
-        //Получение контроллера для вьюхи
-        ViewController viewController = loader.getController();
+        network = new Network();
         //если соединение не произошло вывести сообщение
         if (!network.connect()) {
+
             alertInfo.alertGo("Connect Input Error","Ошибка подключения к серверу",
                     "Ошибка подключения к серверу", Alert.AlertType.ERROR);
-            viewController.addToStatusLine("Connect Input Error - Ошибка подключения к серверу", Alert.AlertType.ERROR);
-
+            //viewController.addToStatusLine("Connect Input Error - Ошибка подключения к серверу", Alert.AlertType.ERROR);
+            //viewController.addToStatusLine("Error#3 - Ошибка подключения к серверу", Alert.AlertType.ERROR);
+            //если ошибка подключения завершаем метод
+            return;
         }
 
+        //Открытие окна с формой авторизации
+        openAuthWindow();
 
-        //в контроллер передаем объект нашего network
-        viewController.setNetwork(network);
+        //открытие чата при успешном прохождении авторизации
+        openMainChatWindow();
 
-        //Чтение сообщения с сервера
-        network.waitMessage(viewController);
+    }
+    //метод открывающий на экране окно авторизации
+    public void openAuthWindow() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource(PATH_TO_AUTH_XML_LAYOUT));
+        Parent root = loader.load();
 
-        //В случае закрытия нашего окна закрываем сокет
-        //используем лямбду для реализации функционального интерфейса
-        primaryStage.setOnCloseRequest(windowEvent->network.closeSocket());
+        //создание модального окна
+        authStage = new Stage();
+        authStage.setTitle("Авторизация");
+        authStage.initModality(Modality.WINDOW_MODAL);
+        //определяем к чему будем прикреплять модальное окно
+        authStage.initOwner(primaryStage);
+        //сцена для отображения нового окна
+        Scene authScene = new Scene(root);
+        //привязываем Stage к сцене
+        authStage.setScene(authScene);
+        //отображаем на экране
+        authStage.show();
 
+        //контроллер получает объект из лоадера
+        AuthViewController authViewController = loader.getController();
+        authViewController.setNetwork(network);
+        //добавляем текущий объект
+        authViewController.setNetworkClient(this);
 
-
-
+        authStage.setOnCloseRequest(windowEvent->network.closeSocket());
 
     }
 
-    public void openChat() {
+    //Окно открытия основного чата
+    public void openMainChatWindow() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource(PATH_TO_MAIN_XML_LAYOUT));
+
+        //создание окна для отображения
+        // Parent - это обобщенный класс отображаемый для всех компонентов JavaFX
+        //это корневой шаблон который мы видим в окне сцены,
+        Parent root = loader.load();
+        primaryStage.setTitle("FXmessenger v." + VERSION_APP);
+        primaryStage.setScene(new Scene(root, width, height));
+        //primaryStage.show(); //не должно появляться по умолчаниж
+
+        //Получение контроллера для вьюхи
+        ViewController viewController = loader.getController();
+        //в контроллер передаем объект нашего network
+        viewController.setNetwork(network);
+        //Чтение сообщения с сервера
+        //network.waitMessage(viewController);
+        //В случае закрытия нашего окна закрываем сокет
+        //используем лямбду для реализации функционального интерфейса
+        primaryStage.setOnCloseRequest(windowEvent->network.closeSocket());
     }
 }

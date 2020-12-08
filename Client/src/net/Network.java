@@ -12,7 +12,7 @@ import java.net.Socket;
 
 //класс который полностью отвечает за взаимодействие между сервером и клиентом (view ) через контроллер
 public class Network {
-    private static final int SERVER_PORT = 8089;
+    private static final int SERVER_PORT = 8189;
     private static final String SERVER_HOST = "localhost";//если по сети то тут должен был быть ip адрес
 
     private final int port;
@@ -41,7 +41,7 @@ public class Network {
     public boolean connect() {
         //создание сокета клиента, необходимо будет указать хост и порт
         try {
-            socket = new Socket(SERVER_HOST, SERVER_PORT);
+            socket = new Socket(host, port);
             //создание потоков
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
@@ -92,8 +92,8 @@ public class Network {
             }
 
         });
-        //демоны выполняются в фоне и имеют небольшой приоритет, мало потребляют ресурсов и закрываются при
-        //закрытии приложения
+        //демоны выполняются в фоне и имеют небольшой приоритет, мало потребляют ресурсов и
+        // закрываются при закрытии приложения
         thread.setDaemon(true);
         thread.start();
 

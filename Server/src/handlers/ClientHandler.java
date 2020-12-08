@@ -3,13 +3,11 @@ package handlers;
 import autoidentification.AuthService;
 import autoidentification.Prefics;
 import server.MyServer;
-import users.User;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.logging.Handler;
 
 public class ClientHandler {
 
@@ -43,6 +41,7 @@ public class ClientHandler {
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("Ошибка идентификации!");
+
             }
 
             //если аутентификация пройдет то дальше пойдет взаимодействие с клиентом
@@ -73,13 +72,14 @@ public class ClientHandler {
                 //обращаемся к серверу аутентификации что бы проверить логин и пароль
                 AuthService authService = myServer.getAuthService();
                 username = authService.getUsernameByLoginAndPassword(login, password);
-                if (!username.isBlank()) {
+                if (username!=null) {
                     //значит авторизация прошла
                     //проверка не занят ли никнейм
                     if (myServer.isUsernetBusy(username)) {
                         System.out.printf("Никнейм %s уже занят", username);
                         out.writeUTF(String.format("%s %s", Prefics.AUTHERR_CMD_PREFIX.getCode(),
                                 "Никнейм  уже занят"));
+
                     }
 
                     //отправим на клиент никнейм
@@ -93,7 +93,14 @@ public class ClientHandler {
                     //зарегистрировать клиента через подписку на MyServer
                     //т.е. он появляется в списке подключенных к серверу пользователей
                     myServer.subscribe(this); //на вход отдаем текущий хендлер
+                } else {
+                    out.writeUTF(String.format("%s %s", Prefics.AUTHERR_CMD_PREFIX.getCode(),
+                            "Ошибка логина или пароля"));
+
                 }
+            }else {
+                out.writeUTF(String.format("%s %s", Prefics.AUTHERR_CMD_PREFIX.getCode(),
+                        "Ошибка авторизации"));
             }
         }
     }

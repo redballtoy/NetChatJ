@@ -2,7 +2,6 @@ package autoidentification;
 
 import users.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BaseAuthService implements AuthService {
@@ -14,8 +13,10 @@ public class BaseAuthService implements AuthService {
             new User("user3", "3333", "Гендальф_Серый")
     );
 
+
     @Override
     public void start() {
+
         System.out.println("Сервис аутентификации запущен!");
 
     }

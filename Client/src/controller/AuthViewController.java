@@ -8,6 +8,8 @@ import models.Client;
 import net.Network;
 import util.AlertInfo;
 
+import java.io.IOException;
+
 public class AuthViewController {
 
     @FXML public TextField loginField;
@@ -22,7 +24,7 @@ public class AuthViewController {
     //метод проверки аутентификации
     //эту функцию для кнопки которая будет вызываться при нажатии задали в
     //SceneBuilder
-    public void checkAuth() {
+    public void checkAuth() throws IOException {
         String login = loginField.getText();
         String password = passwordField.getText();
 
@@ -36,15 +38,16 @@ public class AuthViewController {
 
         //отправить параметры на авторизацию и вернуть результат
         String authErrorMessage = network.sendAuthCommnd(login, password);
+        System.out.println(authErrorMessage);
         //Если будет ошибка
-        if (!authErrorMessage.isEmpty()) {
+        if (authErrorMessage!=null) {
             //вызываем окно
             new AlertInfo().alertGo("Error Authentication",
                     "Ошибка идентификации",
                     "Повторите ввод логина и пароля", Alert.AlertType.ERROR);
         } else {
-            //Если увторизация пройдена, открывает чат
-            networkClient.openChat();
+            //Если aвторизация пройдена, открывает чат
+            networkClient.openMainChatWindow();
         }
 
 
