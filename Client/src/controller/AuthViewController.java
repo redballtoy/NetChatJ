@@ -1,11 +1,12 @@
 package controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import models.Client;
 import net.Network;
-import util.AlertError;
+import util.AlertInfo;
 
 public class AuthViewController {
 
@@ -18,6 +19,7 @@ public class AuthViewController {
     private Client networkClient;
 
     @FXML
+    //метод проверки аутентификации
     //эту функцию для кнопки которая будет вызываться при нажатии задали в
     //SceneBuilder
     public void checkAuth() {
@@ -27,14 +29,23 @@ public class AuthViewController {
         //Если поля не пустые, передаем данные не Network а в свою очередь на сервер
         //там они будут проверены на валидность
         if (login.isEmpty() || password.isEmpty()) {
-            new AlertError().alertGo("EmptyField","Не введены пароль или логин",
-                    "Введите логин и пароль");
+            new AlertInfo().alertGo("EmptyField","Не введены пароль или логин",
+                    "Введите логин и пароль", Alert.AlertType.INFORMATION);
             return;
         }
 
         //отправить параметры на авторизацию и вернуть результат
-        //String authErrorMessage = network.sendAuthCommnd(login, password);
-        //
+        String authErrorMessage = network.sendAuthCommnd(login, password);
+        //Если будет ошибка
+        if (!authErrorMessage.isEmpty()) {
+            //вызываем окно
+            new AlertInfo().alertGo("Error Authentication",
+                    "Ошибка идентификации",
+                    "Повторите ввод логина и пароля", Alert.AlertType.ERROR);
+        } else {
+            //Если увторизация пройдена, открывает чат
+            networkClient.openChat();
+        }
 
 
     }

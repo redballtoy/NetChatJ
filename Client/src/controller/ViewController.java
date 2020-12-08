@@ -1,12 +1,11 @@
 package controller;
 
-import net.Network;
-import net.Network;
-import util.AlertError;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import net.Network;
+import util.AlertInfo;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -45,10 +44,6 @@ public class ViewController {
     private final ObservableList<String> statusLine = FXCollections.observableArrayList(
             "Строка статуса...");
 
-
-    //При первом открытии окна будет метод инициализации
-    @FXML
-
     //для взаимодействия с классом Network его необходимо получить
     private Network network;
 
@@ -65,13 +60,29 @@ public class ViewController {
         lv_status_line.setItems(statusLine);
     }
 
+    //Добавление информации в строку статуса
+    public void addToStatusLine(String msg, Alert.AlertType type) {
+        if (type == Alert.AlertType.INFORMATION) {
+            lv_status_line.setStyle("-fx-control-inner-background: " + "derive(palegreen, 50%)" + ";");
+
+            //lv_status_line.setStyle("-fx-font-size: 16px; -fx-text-inner-color: red");
+        } else {
+            //lv_status_line.setStyle("-fx-font-size: 16px; -fx-text-inner-color: green");
+            lv_status_line.setStyle("-fx-control-inner-background: " + "derive(red, 50%)" + ";");
+        }
+        //lv_status_line.setStyle("-fx-control-inner-background: " + "derive(orange, 50%)" + ";");
+        //lv_status_line.setStyle("-fx-font-size: 16px; -fx-text-inner-color: orange");
+        statusLine.add(msg);
+
+    }
+
     @FXML
     //Добавление слова в список
     public void addWordToList(String word) {
         //Валидация что в окно ввода не пустое
         if (word.isEmpty()) {
-            new AlertError().alertGo("Input Error!", "Ошибка ввода сообщения"
-                    , "Вы не ввели сообщение!\nНельзя вводить пустое сообщение!");
+            new AlertInfo().alertGo("Input Error!", "Ошибка ввода сообщения"
+                    , "Вы не ввели сообщение!\nНельзя вводить пустое сообщение!", Alert.AlertType.ERROR);
         } else {
             //Получаем коллекцию элементов из ListView и добавляем в нее то что вводим внизу
             lv_output_word.getItems().add(word);
@@ -88,13 +99,13 @@ public class ViewController {
         String word = et_edit_text.getText().toString();
         //Вадидация что в осно ввода не пустое
         if (word.isEmpty()) {
-            new AlertError().alertGo("Input Error!", "Ошибка ввода сообщения"
-                    , "Вы не ввели сообщение!\nНельзя вводить пустое сообщение!");
+            new AlertInfo().alertGo("Input Error!", "Ошибка ввода сообщения"
+                    , "Вы не ввели сообщение!\nНельзя вводить пустое сообщение!", Alert.AlertType.ERROR);
         } else {
             //Получаем коллекцию элементов из ListView и добавляем в нее то что вводим внизу
             if (getCurrentUser() == null) {
-                new AlertError().alertGo("Select Error","Ошибка выбора пользователя"
-                        ,"Ваберите кому хотите написать");
+                new AlertInfo().alertGo("Select Error","Ошибка выбора пользователя"
+                        ,"Ваберите кому хотите написать", Alert.AlertType.ERROR);
                 return;
             }
 
@@ -142,10 +153,10 @@ public class ViewController {
             network.getOut().writeUTF(msg);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Ошибка при отправке сообщения " + msg);
+            //System.out.println("Ошибка при отправке сообщения " + msg);
+            addToStatusLine("Error#2 - Ошибка отправки сообщения", Alert.AlertType.ERROR);
         }
 
 
     }
-
 }

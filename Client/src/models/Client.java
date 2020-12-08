@@ -2,8 +2,9 @@ package models;//вставить в переменную
 //--module-path ${PATH_TO_FX} --add-modules javafx.controls,javafx.fxml
 
 import controller.ViewController;
+import javafx.scene.control.Alert;
 import net.Network;
-import util.AlertError;
+import util.AlertInfo;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,7 +21,7 @@ public class Client extends Application {
     final int width = 1000;
     final int height = 600;
     final int VERSION_APP = 6;
-    final AlertError alertError = new AlertError();
+    final AlertInfo alertInfo = new AlertInfo();
 
 
     //Единственная цель этого метода запуск приложения
@@ -44,14 +45,17 @@ public class Client extends Application {
 
         //Получение network и взаимодействие с ним
         Network network = new Network();
-        //если соединение не произошло вывести сообщение
-        if (!network.connect()) {
-            alertError.alertGo("Connect Input Error","Ошибка подключения к серверу",
-                    "Ошибка подключения к серверу");
-        }
-
         //Получение контроллера для вьюхи
         ViewController viewController = loader.getController();
+        //если соединение не произошло вывести сообщение
+        if (!network.connect()) {
+            alertInfo.alertGo("Connect Input Error","Ошибка подключения к серверу",
+                    "Ошибка подключения к серверу", Alert.AlertType.ERROR);
+            viewController.addToStatusLine("Connect Input Error - Ошибка подключения к серверу", Alert.AlertType.ERROR);
+
+        }
+
+
         //в контроллер передаем объект нашего network
         viewController.setNetwork(network);
 
@@ -68,4 +72,6 @@ public class Client extends Application {
 
     }
 
+    public void openChat() {
+    }
 }

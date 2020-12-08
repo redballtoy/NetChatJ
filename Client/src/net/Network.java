@@ -1,7 +1,9 @@
 package net;
 
+import autoidentification.Prefics;
 import controller.ViewController;
-import util.AlertError;
+import javafx.scene.control.Alert;
+import util.AlertInfo;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -18,8 +20,10 @@ public class Network {
     private DataInputStream in;
     private DataOutputStream out;
     private Socket socket;
+    private String username;
 
-    final AlertError alertError = new AlertError();
+
+    final AlertInfo alertInfo = new AlertInfo();
 
     //будет обращаться к конструктору с дефолтными параметрами
     public Network() {
@@ -44,8 +48,8 @@ public class Network {
             return true;
         } catch (IOException e) {
             e.printStackTrace();
-            alertError.alertGo("IOException", "Connection Error"
-                    , "Соединение не было установлено");
+            alertInfo.alertGo("IOException", "Connection Error"
+                    , "Соединение не было установлено", Alert.AlertType.ERROR);
             return false;
         }
     }
@@ -82,8 +86,9 @@ public class Network {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                alertError.alertGo("IOException", "Connection Error"
-                        , "Соединение потеряно");
+                alertInfo.alertGo("IOException", "Connection Error"
+                        , "Соединение потеряно", Alert.AlertType.ERROR);
+
             }
 
         });
@@ -92,5 +97,41 @@ public class Network {
         thread.setDaemon(true);
         thread.start();
 
+    }
+
+    public String sendAuthCommnd(String login, String password) {
+        try {
+            out.writeUTF(String.format("%s %s %s",
+                    Prefics.AUTH_CMD_PREFIX.getCode(),
+                    login,
+                    password));
+        } catch (IOException e) {
+            e.printStackTrace();
+            new AlertInfo().alertGo("Send info to server Error!"
+                    , "Ошибка отправки данныз пользователя на сервер",
+                    "Попробовать еще раз", Alert.AlertType.ERROR);
+        }
+        //Должны получить ответ от сервера
+        String responce = null;
+        try {
+            responce = in.readUTF();
+        } catch (IOException e) {
+            e.printStackTrace();
+            new AlertInfo().alertGo("Server responce Error!"
+                    , "Ошибка получения данных аутентификации с сервера",
+                    "Попробовать еще раз", Alert.AlertType.ERROR);
+        }
+
+        //Проверяем префиксы
+        if (responce.startsWith(Prefics.AUTH_CMD_PREFIX.getCode())) {
+            //Ок продолжаем процедуру ауторизации
+            //Парсим ответ от сервера
+            this.username = responce.split(Prefics.STRING_SPLIT_PREFIX.getCode(), 2)[1];
+            new AlertInfo().alertGo("Auth successfully!", "Аутодентификация пройдена",
+                    "Пользователь: " + username + " авторизован!", Alert.AlertType.INFORMATION);
+            //ошибки нет
+            return null;
+        }
+        return responce.split(Prefics.STRING_SPLIT_PREFIX.getCode(), 2)[1];
     }
 }

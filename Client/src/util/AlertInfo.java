@@ -2,9 +2,9 @@ package util;
 
 import javafx.scene.control.Alert;
 
-public class AlertError {
-    public void alertGo(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+public class AlertInfo {
+    public void alertGo(String title, String header, String content,Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
